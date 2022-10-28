@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta http-equiv="Content-Style-Type" content="text/css">
+        <meta charset="utf-8">
+        <title>index</title>
+    </head>
+    <body>
+        <h1>NBA データベース</h1>
+
+        <h3>データベースの対象名</h3>
+        アメリカのバスケットボールリーグ，NBA
+
+        <h3>入り口へのリンク</h3>
+        <a href="http://user.keio.ac.jp/~ub412543/ssql/home.html">NBA Database</a>
+
+        <h3>作成したSuperSQL質問文と説明</h3>
+            <ol>
+                <li>
+                    home.ssql - <a href="http://user.keio.ac.jp/~ub412543/ssql/home.html">home</a> <br>
+                    どのページからでもアクセスすることができるホームページが表示される． <br>
+                    一覧を表示するplayerlist, teamlist, matchschedules, goodslistへのリンクと， <br>
+                    「一番最近出場したシーズンが2015年以降で，試合平均得点が25より大きい選手の， <br>
+                    名前，シーズン，所属チーム名，試合平均得点を，試合平均得点が大きい順に並べた」， <br>
+                    highestpointsで定義されているビューが表示される．
+                    <pre>
+    generate html
+    {
+
+    "NBA Database"@{font-size=25, font-weight='bold'}!
+    line(2)!
+
+    "Go to:"!
+    link("PLAYERS", 'playerlist.ssql', '')!
+    link("TEAM LIST", 'teamlist.ssql', '')!
+    link("MATCH RESULTS", 'matchschedules.ssql', '')!
+    link("GOODS", 'goodslist.ssql', '')!
+
+    ""@{height=50}!
+    "Players with game point average above 25"@{font-size=20, font-weight='bold', width=600, align='right'}!
+    line(1)!
+
+    {"Player"@{width=200, align='left'},
+    "Team"@{width=200, align='left'},
+    "Season"@{width=100, align='center'},
+    "Game point average"@{width=100, align='center'}}@{font-size=17}!
+
+    ""@{height=10}!
+
+    [link(h.playername@{width=200, align='left'}, 'stats.ssql', h.playerid),
+    link(h.teamname@{width=200, align='left'}, 'team.ssql', h.teamid),
+    h.season@{width=100},
+    (desc)h.points_per_game@{width=100}]!@{align='center'}
+
+    }@{debug='off', pbgcolor='beige', table-align='center', title='home'}
+
+    from highestpoints h;
+                    </pre>
+                </li>
+                <li>
+                    playerlist.ssql - <a href="http://user.keio.ac.jp/~ub412543/ssql/playerlist.html">playerlist</a> <br>
+                    選手一覧をファーストネームのアルファベット順で5人ごとに行を折り返すように表示される．
+                    <pre>
+    generate html
+    {
+
+    link("HOME", 'home.ssql', '')!
+    "Players (A-Z by first name)"@{font-size=20, font-weight='bold', width=1000, align='right'}!
+    line(2)!
+    [link((asc)i.name@{width=200}, 'stats.ssql', i.playerid)],5!
+
+    }@{debug='off', pbgcolor='beige', table-align='center', title='playerlist'}
+
+    from playerinfo i;
+                    </pre>
+                </li>
+                <li>
+                    teamlist.ssql - <a href="http://user.keio.ac.jp/~ub412543/ssql/teamlist.html">teamlist</a> <br>
+                    チーム一覧が略称のアルファベット順で表示される．
+                    <pre>
+    generate html
+    {
+
+    link("HOME", 'home.ssql', '')!
+
+    "Team list"@{font-size=20, font-weight='bold', width=270, align='right'}!
+    line(2)!
+
+    [(asc)t.abbreviation@{width=70},
+    link(t.name@{width=200}, 'team.ssql', t.teamid)]!
+
+    }@{debug='off', pbgcolor='beige', table-align='center', title='teamlist'}
+
+    from teaminfo t;
+                    </pre>
+                </li>
+                <li>
+                    matchschedules.ssql - <a href="http://user.keio.ac.jp/~ub412543/ssql/matchschedules.html">matchschedules</a> <br>
+                    試合記録(2019年度)が日付降順で表示される． <br>
+                    データベースのテーブルmatchscheduleではホームチームとアウェイチームはIDでしか情報が保持されていないので， <br>
+                    IDから名前に置き換えたmatchschedule_withnameをビューとして定義し，用いている．
+                    <pre>
+    generate html
+    {
+
+    link("HOME", 'home.ssql', '')!
+
+    "Matches"@{font-size=20, font-weight='bold', width=700, align='right'}!
+    line(2)!
+
+    {"Match start time"@{width=200},
+    "Home team"@{width=200},
+    "",
+    "Score"@{width=100, align='center'},
+    "",
+    "Visiting team"@{width=200, align='right'}
+    }@{font-size=17}!
+
+    ""@{height=10}!
+
+    [(desc)mn.start_time@{width=200},
+    link(mn.home@{width=200}, 'team.ssql', mn.home_teamid),
+    mn.home_score@{width=50, align='center'},
+    ":",
+    mn.visitor_score@{width=50, align='center'},
+    link(mn.visitor@{width=200, align='right'}, 'team.ssql', mn.visitor_teamid)]!
+
+    }@{debug='off', pbgcolor='beige', table-align='center', title='matchschedules'}
+
+    from matchschedule_withname mn;
+                    </pre>
+                </li>
+                <li>
+                    goodslist.ssql - <a href="http://user.keio.ac.jp/~ub412543/ssql/goodslist.html">goodslist</a> <br>
+                    グッズ一覧が値段の昇順で表示される．
+                    <pre>
+    generate html
+    {
+
+    link("HOME", 'home.ssql', '')!
+
+    "Item list"@{font-size=20, font-weight='bold', width=430, align='right'}!
+    line(2)!
+
+    {"Item name"@{width=130},
+    "Price"@{width=100},
+    "Reference team"@{width=200}
+    }@{font-size=17}!
+
+    ""@{height=10}!
+
+    [link(gn.name@{width=130}, 'goods_search.ssql', gn.goodsid),
+    {"$" || (asc)g.price}@{width=100},
+    link(t.name@{width=200}, 'team.ssql', t.teamid)]!
+
+    }@{debug='off', pbgcolor='beige', table-align='center', title='goodslist'}
+
+    from goodsinfo g, goodsname gn, teaminfo t
+
+    where g.reference_teamid=t.teamid and g.goodsid=gn.goodsid;
+                    </pre>
+                </li>
+                <li>
+                    goodsitem.ssql - <a href="http://user.keio.ac.jp/~ub412543/ssql/goods_search.html?att=14">goodsitem (jersey)</a> <br>
+                    グッズ名ごとにそのグッズが売っているチームと価格が表示される．
+                    <pre>
+    foreach gn.goodsid
+
+    generate html
+    {
+
+    link("HOME", 'home.ssql', '')!
+
+    link(gn.name@{font-size=20, font-weight='bold', width=250, align='right'}, 'goodslist.ssql', '')!
+    line(2)!
+
+    {"Reference team"@{width=200},
+    "Price"@{width=50}
+    }@{font-size=17}!
+
+    ""@{height=10}!
+
+    [link((asc)t.name@{width=200}, 'team.ssql', t.teamid),
+    "$" || g.price@{width=50}]!
+
+    }@{debug='off', pbgcolor='beige', table-align='center', title='goodsitem'}
+
+    from goodsinfo g, goodsname gn, teaminfo t
+
+    where gn.goodsid=g.goodsid and g.reference_teamid=t.teamid;
+                    </pre>
+                </li>
+                <li>
+                    stats.ssql - <a href="http://user.keio.ac.jp/~ub412543/ssql/stats.html?att=2243">stats (Michael Jordan)</a> <br>
+                    選手ごとに顔写真とシーズンごとのスタッツが表示される．
+                    <pre>
+    foreach i.playerid
+
+    generate html
+    {
+
+    link("HOME", 'home.ssql', '')!
+
+    ""@{height=10}!
+
+    link(i.name@{font-size=20, font-weight='bold'}, 'playerlist.ssql', i.playerid)!
+    ""@{height=10}!
+    image(i.pict, "./image")!
+    ""@{height=10}!
+
+    {"Height:"@{width=100}, i.height || "cm"}!
+    {"Weight:"@{width=100}, i.weight || "kg"}!
+    {"Date of birth:"@{width=100}, i.birthday}!
+    line(1)!
+
+    ""@{height=10}!
+
+    {"Season"@{width=250, height=25}!
+    "Age"@{height=25}!
+    "Team"@{height=25}!
+    "Position"@{height=25}!
+    "Games played"@{height=25}!
+    "Minutes played per game"@{height=25}!
+    "Points per game"@{height=25}!
+    "Games started"@{height=25}!
+    "Field goals per game"@{height=25}!
+    "Field goal attempts per game"@{height=25}!
+    "Field goal percentage"@{height=25}!
+    "3p per game"@{height=25}!
+    "3p attempts per game"@{height=25}!
+    "3p percentage"@{height=25}!
+    "2p per game"@{height=25}!
+    "2p attempts per game"@{height=25}!
+    "2p percentage"@{height=25}!
+    "Effective field goal percentage"@{height=25}!
+    "Free throws per game"@{height=25}!
+    "Free throw attempts per game"@{height=25}!
+    "Free throw percentage"@{height=25}!
+    "Offensive rebounds per game"@{height=25}!
+    "Defensive rebounds per game"@{height=25}!
+    "Total rebounds per game"@{height=25}!
+    "Assists per game"@{height=25}!
+    "Steals per game"@{height=25}!
+    "Blocks per game"@{height=25}!
+    "Turnovers per game"@{height=25}!
+    "Personal fouls per game"@{height=25}},
+
+    [(desc)s.season@{height=25}!
+    s.age@{height=25}!
+    link(t.name@{width=200, height=25}, 'team.ssql', t.teamid)!
+    s.position@{height=25}!
+    s.games_played@{height=25}!
+    s.minutes_played_per_game@{height=25}!
+    s.points_per_game@{height=25}!
+    s.games_started@{height=25}!
+    s.field_goals_per_game@{height=25}!
+    s.field_goal_attempts_per_game@{height=25}!
+    s.field_goal_percentage@{height=25}!
+    s.threepoints_per_game@{height=25}!
+    s.threepoint_attempts_per_game@{height=25}!
+    s.threepoint_percentage@{height=25}!
+    s.twopoints_per_game@{height=25}!
+    s.twopoint_attempts_per_game@{height=25}!
+    s.twopoint_percentage@{height=25}!
+    s.effective_field_goal_percentage@{height=25}!
+    s.free_throws_per_game@{height=25}!
+    s.free_throw_attempts_per_game@{height=25}!
+    s.free_throw_percentage@{height=25}!
+    s.offensive_rebounds_per_game@{height=25}!
+    s.defensive_rebounds_per_game@{height=25}!
+    s.total_rebounds_per_game@{height=25}!
+    s.assists_per_game@{height=25}!
+    s.steals_per_game@{height=25}!
+    s.blocks_per_game@{height=25}!
+    s.turnovers_per_game@{height=25}!
+    personal_fouls_per_game@{height=25}],
+
+    }@{debug='off', pbgcolor='beige', title='stats'}
+
+    from playerinfo i, playerstats s, teaminfo t
+
+    where i.playerid=s.playerid and s.teamid=t.teamid;
+                    </pre>
+                </li>
+                <li>
+                    team.ssql - <a href="http://user.keio.ac.jp/~ub412543/ssql/team.html?att=14">team (Washington Wizards)</a> <br>
+                    チームごとにそのチーム情報とシーズンごとの所属選手が表示される． <br>
+                    そのチームに関するグッズ一覧teamgoodslist， <br>
+                    そのチームがホームだった時の試合記録homematches， <br>
+                    そのチームがアウェイだった時の試合記録visitingmatchesへのリンクが表示される．
+                    <pre>
+    foreach t.teamid
+
+    generate html
+    {
+
+    link("HOME", 'home.ssql', '')!
+
+    ""@{height=10}!
+
+    {t.name@{font-weight='bold'}, link(t.abbreviation, 'teamlist.ssql', t.teamid)}@{font-size=20}!
+    {"Conference:"@{width=100}, t.conference}@{width=300}, link("show team goods", 'team_goodslist.ssql', t.teamid)!
+    {"Division:"@{width=100}, t.division}@{width=300}, link("show home match results", 'home_matchschedule.ssql', t.teamid)!
+    {"Coach:"@{width=100}, t.coach}@{width=300}, link("show visiting match results", 'visiting_matchschedule.ssql', t.teamid)!
+    line(1)!
+
+    ""@{height=10}!
+    "Players by season"@{font-size=17}!
+    ""@{height=10}!
+
+    [{(desc)s.season!
+    [link((asc)i.name@{width=200}, 'stats.ssql', i.playerid)]!
+    }@{valign='top'}],
+
+    }@{debug='off', pbgcolor='beige', title='team'}
+
+    from playerinfo i, playerstats s, teaminfo t
+
+    where s.playerid=i.playerid and s.teamid=t.teamid;
+                    </pre>
+                </li>
+                <li>
+                    team_goodslist.ssql - <a href="http://user.keio.ac.jp/~ub412543/ssql/team_goodslist.html?att=14">teamgoodslist (Washington Wizards)</a> <br>
+                    チームごとにそのチームに関するグッズ一覧が表示される．
+                    <pre>
+    foreach t.teamid
+
+    generate html
+    {
+
+    link("HOME", 'home.ssql', '')!
+    link("back", 'team.ssql', t.teamid)!
+
+    "Goods - "@{font-size=20, font-weight='bold', width=200, align='right'},
+    t.name@{font-size=20, font-weight='bold', width=250, align='center'}!
+    line(2)!
+
+    {"Item name"@{width=200},
+    "Price"@{width=250}
+    }@{font-size=17}!
+
+    ""@{height=10}!
+
+    [link((asc)gn.name@{width=200}, 'goods_search.ssql', g.goodsid), "$" || g.price@{width=250}]!
+
+    }@{debug='off', pbgcolor='beige', table-align='center', title='teamgoodslist'}
+
+    from teaminfo t, goodsinfo g, goodsname gn
+
+    where t.teamid=g.reference_teamid and g.goodsid=gn.goodsid;
+                    </pre>
+                </li>
+                <li>
+                    home_matchschedule.ssql - <a href="http://user.keio.ac.jp/~ub412543/ssql/home_matchschedule.html?att=14">homematches (Washington Wizards)</a> <br>
+                    チームごとにそのチームがホームだった時の試合記録が表示される．
+                    <pre>
+    foreach m.home_teamid
+
+    generate html
+    {
+
+    link("HOME", 'home.ssql', '')!
+    link("back", 'team.ssql', m.home_teamid)!
+
+    "Home matches - "@{font-size=20, font-weight='bold', width=450, align='right'},
+    mn.home@{font-size=20, font-weight='bold', width=250, align='center'}!
+    line(2)!
+
+    {"Match start time"@{width=200},
+    "Home team"@{width=200},
+    "",
+    "Score"@{width=100, align='center'},
+    "",
+    "Visiting team"@{width=200, align='right'}
+    }@{font-size=17}!
+
+    ""@{height=10}!
+
+    [(desc)mn.start_time@{width=200},
+    link(mn.home@{width=200}, 'team.ssql', mn.home_teamid),
+    mn.home_score@{width=50, align='center'},
+    ":",
+    mn.visitor_score@{width=50, align='center'},
+    link(mn.visitor@{width=200, align='right'}, 'team.ssql', mn.visitor_teamid)]!
+
+    }@{debug='off', pbgcolor='beige', table-align='center', title='homematches'}
+
+    from matchschedule_withname mn, matchschedule m
+    where m.home_teamid=mn.home_teamid;
+                    </pre>
+                </li>
+                <li>
+                    visiting_matchschedule.ssql - <a href="http://user.keio.ac.jp/~ub412543/ssql/visiting_matchschedule.html?att=14">visitingmatches (Washington Wizards)</a> <br>
+                    チームごとにそのチームがアウェイだった時の試合記録が表示される．
+                    <pre>
+    foreach m.visitor_teamid
+
+    generate html
+    {
+
+    link("HOME", 'home.ssql', '')!
+    link("back", 'team.ssql', m.visitor_teamid)!
+
+    "Visiting matches - "@{font-size=20, font-weight='bold', width=450, align='right'},
+    mn.visitor@{font-size=20, font-weight='bold', width=250, align='center'}!
+    line(2)!
+
+    {"Match start time"@{width=200},
+    "Home team"@{width=200},
+    "",
+    "Score"@{width=100, align='center'},
+    "",
+    "Visiting team"@{width=200, align='right'}
+    }@{font-size=17}!
+
+    ""@{height=10}!
+
+    [(desc)mn.start_time@{width=200},
+    link(mn.home@{width=200}, 'team.ssql', mn.home_teamid),
+    mn.home_score@{width=50, align='center'},
+    ":",
+    mn.visitor_score@{width=50, align='center'},
+    link(mn.visitor@{width=200, align='right'}, 'team.ssql', mn.visitor_teamid)]!
+
+    }@{debug='off', pbgcolor='beige', table-align='center', title='visitingmatches'}
+
+    from matchschedule_withname mn, matchschedule m
+    where m.visitor_teamid=mn.visitor_teamid;
+                    </pre>
+                </li>
+            </ol>
+
+        <h3>SuperSQLについての意見，感想</h3>
+        SuperSQLを用いることによって簡単にデータベースから質問文を用いてブラウザにその情報を載せられて便利に感じた． <br>
+        今回作成したウェブサイトの選手情報を表示するページは，表示はされるものの，表示されるまでにかかる時間があまりに長いと感じた． <br>
+        実際に利用をすることを考えると，この待たされる時間を短くするのが課題であると考えられる． <br>
+        また，視覚的な情報として，データを用いてグラフのようなものができれば，今回作成したウェブサイトはもっと彩ったと思う． <br>
+
+    </body>
+</html>
