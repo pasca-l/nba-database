@@ -11,4 +11,4 @@ The webpage above is directed to a plain HTML, containing information about the 
 ## Screenshots
 | Home page | Example player page |
 | --- | --- |
-| ![NBA Database home page](https://user-images.githubusercontent.com/70369563/198649790-8555d602-caff-4256-9867-152d48b66dc2.png) | ![James Harden](https://user-images.githubusercontent.com/70369563/198649790-8555d602-caff-4256-9867-152d48b66dc2.png) |
+| ![NBA Database home page](https://user-images.githubusercontent.com/70369563/198649790-8555d602-caff-4256-9867-152d48b66dc2.png) | ![James Harden](https://user-images.githubusercontent.com/70369563/198658627-abe4c380-8f84-4b9c-853e-f9f2aa294182.png) |
