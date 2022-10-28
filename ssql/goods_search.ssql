@@ -1,0 +1,24 @@
+foreach gn.goodsid
+
+generate html
+{
+
+link("HOME", 'home.ssql', '')!
+
+link(gn.name@{font-size=20, font-weight='bold', width=250, align='right'}, 'goodslist.ssql', '')!
+line(2)!
+
+{"Reference team"@{width=200},
+"Price"@{width=50}
+}@{font-size=17}!
+
+""@{height=10}!
+
+[link((asc)t.name@{width=200}, 'team.ssql', t.teamid),
+"$" || g.price@{width=50}]!
+
+}@{debug='off', pbgcolor='beige', table-align='center', title='goodsitem'}
+
+from goodsinfo g, goodsname gn, teaminfo t
+
+where gn.goodsid=g.goodsid and g.reference_teamid=t.teamid;

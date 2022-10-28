@@ -1,0 +1,31 @@
+generate html
+{
+
+"NBA Database"@{font-size=25, font-weight='bold'}!
+line(2)!
+
+"Go to:"!
+link("PLAYERS", 'playerlist.ssql', '')!
+link("TEAM LIST", 'teamlist.ssql', '')!
+link("MATCH RESULTS", 'matchschedules.ssql', '')!
+link("GOODS", 'goodslist.ssql', '')!
+
+""@{height=50}!
+"Players with game point average above 25"@{font-size=20, font-weight='bold', width=600, align='right'}!
+line(1)!
+
+{"Player"@{width=200, align='left'},
+"Team"@{width=200, align='left'},
+"Season"@{width=100, align='center'},
+"Game point average"@{width=100, align='center'}}@{font-size=17}!
+
+""@{height=10}!
+
+[link(h.playername@{width=200, align='left'}, 'stats.ssql', h.playerid),
+link(h.teamname@{width=200, align='left'}, 'team.ssql', h.teamid),
+h.season@{width=100},
+(desc)h.points_per_game@{width=100}]!@{align='center'}
+
+}@{debug='off', pbgcolor='beige', table-align='center', title='home'}
+
+from highestpoints h;

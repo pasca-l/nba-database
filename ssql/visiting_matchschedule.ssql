@@ -1,0 +1,33 @@
+foreach m.visitor_teamid
+
+generate html
+{
+
+link("HOME", 'home.ssql', '')!
+link("back", 'team.ssql', m.visitor_teamid)!
+
+"Visiting matches - "@{font-size=20, font-weight='bold', width=450, align='right'},
+mn.visitor@{font-size=20, font-weight='bold', width=250, align='center'}!
+line(2)!
+
+{"Match start time"@{width=200},
+"Home team"@{width=200},
+"",
+"Score"@{width=100, align='center'},
+"",
+"Visiting team"@{width=200, align='right'}
+}@{font-size=17}!
+
+""@{height=10}!
+
+[(desc)mn.start_time@{width=200},
+link(mn.home@{width=200}, 'team.ssql', mn.home_teamid),
+mn.home_score@{width=50, align='center'},
+":",
+mn.visitor_score@{width=50, align='center'},
+link(mn.visitor@{width=200, align='right'}, 'team.ssql', mn.visitor_teamid)]!
+
+}@{debug='off', pbgcolor='beige', table-align='center', title='visitingmatches'}
+
+from matchschedule_withname mn, matchschedule m
+where m.visitor_teamid=mn.visitor_teamid;

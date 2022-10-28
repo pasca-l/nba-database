@@ -1,0 +1,28 @@
+foreach t.teamid
+
+generate html
+{
+
+link("HOME", 'home.ssql', '')!
+
+""@{height=10}!
+
+{t.name@{font-weight='bold'}, link(t.abbreviation, 'teamlist.ssql', t.teamid)}@{font-size=20}!
+{"Conference:"@{width=100}, t.conference}@{width=300}, link("show team goods", 'team_goodslist.ssql', t.teamid)!
+{"Division:"@{width=100}, t.division}@{width=300}, link("show home match results", 'home_matchschedule.ssql', t.teamid)!
+{"Coach:"@{width=100}, t.coach}@{width=300}, link("show visiting match results", 'visiting_matchschedule.ssql', t.teamid)!
+line(1)!
+
+""@{height=10}!
+"Players by season"@{font-size=17}!
+""@{height=10}!
+
+[{(desc)s.season!
+[link((asc)i.name@{width=200}, 'stats.ssql', i.playerid)]!
+}@{valign='top'}],
+
+}@{debug='off', pbgcolor='beige', title='team'}
+
+from playerinfo i, playerstats s, teaminfo t
+
+where s.playerid=i.playerid and s.teamid=t.teamid;

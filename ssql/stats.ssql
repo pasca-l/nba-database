@@ -1,0 +1,86 @@
+foreach i.playerid
+
+generate html
+{
+
+link("HOME", 'home.ssql', '')!
+
+""@{height=10}!
+
+link(i.name@{font-size=20, font-weight='bold'}, 'playerlist.ssql', i.playerid)!
+""@{height=10}!
+image(i.pict, "./image")!
+""@{height=10}!
+
+{"Height:"@{width=100}, i.height || "cm"}!
+{"Weight:"@{width=100}, i.weight || "kg"}!
+{"Date of birth:"@{width=100}, i.birthday}!
+line(1)!
+
+""@{height=10}!
+
+{"Season"@{width=250, height=25}!
+"Age"@{height=25}!
+"Team"@{height=25}!
+"Position"@{height=25}!
+"Games played"@{height=25}!
+"Minutes played per game"@{height=25}!
+"Points per game"@{height=25}!
+"Games started"@{height=25}!
+"Field goals per game"@{height=25}!
+"Field goal attempts per game"@{height=25}!
+"Field goal percentage"@{height=25}!
+"3p per game"@{height=25}!
+"3p attempts per game"@{height=25}!
+"3p percentage"@{height=25}!
+"2p per game"@{height=25}!
+"2p attempts per game"@{height=25}! 
+"2p percentage"@{height=25}!
+"Effective field goal percentage"@{height=25}!
+"Free throws per game"@{height=25}!
+"Free throw attempts per game"@{height=25}!
+"Free throw percentage"@{height=25}!
+"Offensive rebounds per game"@{height=25}!
+"Defensive rebounds per game"@{height=25}!
+"Total rebounds per game"@{height=25}!
+"Assists per game"@{height=25}!
+"Steals per game"@{height=25}!
+"Blocks per game"@{height=25}!
+"Turnovers per game"@{height=25}!
+"Personal fouls per game"@{height=25}},
+
+[(desc)s.season@{height=25}!
+s.age@{height=25}!
+link(t.name@{width=200, height=25}, 'team.ssql', t.teamid)!
+s.position@{height=25}!
+s.games_played@{height=25}!
+s.minutes_played_per_game@{height=25}!
+s.points_per_game@{height=25}!
+s.games_started@{height=25}!
+s.field_goals_per_game@{height=25}!
+s.field_goal_attempts_per_game@{height=25}!
+s.field_goal_percentage@{height=25}!
+s.threepoints_per_game@{height=25}!
+s.threepoint_attempts_per_game@{height=25}!
+s.threepoint_percentage@{height=25}!
+s.twopoints_per_game@{height=25}!
+s.twopoint_attempts_per_game@{height=25}!
+s.twopoint_percentage@{height=25}!
+s.effective_field_goal_percentage@{height=25}!
+s.free_throws_per_game@{height=25}!
+s.free_throw_attempts_per_game@{height=25}!
+s.free_throw_percentage@{height=25}!
+s.offensive_rebounds_per_game@{height=25}!
+s.defensive_rebounds_per_game@{height=25}!
+s.total_rebounds_per_game@{height=25}!
+s.assists_per_game@{height=25}!
+s.steals_per_game@{height=25}!
+s.blocks_per_game@{height=25}!
+s.turnovers_per_game@{height=25}!
+personal_fouls_per_game@{height=25}],
+
+}@{debug='off', pbgcolor='beige', title='stats'}
+
+from playerinfo i, playerstats s, teaminfo t
+
+where i.playerid=s.playerid and s.teamid=t.teamid;

@@ -1,0 +1,11 @@
+generate html
+{
+
+link("HOME", 'home.ssql', '')!
+"Players (A-Z by first name)"@{font-size=20, font-weight='bold', width=1000, align='right'}!
+line(2)!
+[link((asc)i.name@{width=200}, 'stats.ssql', i.playerid)],5!
+
+}@{debug='off', pbgcolor='beige', table-align='center', title='playerlist'}
+
+from playerinfo i;

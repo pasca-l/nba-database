@@ -1,0 +1,24 @@
+generate html
+{
+
+link("HOME", 'home.ssql', '')!
+
+"Item list"@{font-size=20, font-weight='bold', width=430, align='right'}!
+line(2)!
+
+{"Item name"@{width=130},
+"Price"@{width=100},
+"Reference team"@{width=200}
+}@{font-size=17}!
+
+""@{height=10}!
+
+[link(gn.name@{width=130}, 'goods_search.ssql', gn.goodsid),
+{"$" || (asc)g.price}@{width=100},
+link(t.name@{width=200}, 'team.ssql', t.teamid)]!
+
+}@{debug='off', pbgcolor='beige', table-align='center', title='goodslist'}
+
+from goodsinfo g, goodsname gn, teaminfo t
+
+where g.reference_teamid=t.teamid and g.goodsid=gn.goodsid;

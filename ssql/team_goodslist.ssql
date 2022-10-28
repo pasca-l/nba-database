@@ -1,0 +1,25 @@
+foreach t.teamid
+
+generate html
+{
+
+link("HOME", 'home.ssql', '')!
+link("back", 'team.ssql', t.teamid)!
+
+"Goods - "@{font-size=20, font-weight='bold', width=200, align='right'},
+t.name@{font-size=20, font-weight='bold', width=250, align='center'}!
+line(2)!
+
+{"Item name"@{width=200},
+"Price"@{width=250}
+}@{font-size=17}!
+
+""@{height=10}!
+
+[link((asc)gn.name@{width=200}, 'goods_search.ssql', g.goodsid), "$" || g.price@{width=250}]!
+
+}@{debug='off', pbgcolor='beige', table-align='center', title='teamgoodslist'}
+
+from teaminfo t, goodsinfo g, goodsname gn
+
+where t.teamid=g.reference_teamid and g.goodsid=gn.goodsid;
